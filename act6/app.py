@@ -14,7 +14,7 @@ df["OrderDate"] = pd.to_datetime(df["OrderDate"], errors="coerce")
 
 # Crear app
 app = Dash(__name__)
-server = app.server   # para Render
+server = app.server 
 
 # Layout
 app.layout = html.Div([
