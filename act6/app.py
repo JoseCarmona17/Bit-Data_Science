@@ -10,9 +10,11 @@ df["OrderDate"] = pd.to_datetime(df["OrderDate"], errors="coerce")
 
 # Crear columna de ventas
 df["Sales"] = df["Quantity"] * df["UnitPrice"]
+
+# Se convierte la fecha a formato datetime
 df["OrderDate"] = pd.to_datetime(df["OrderDate"], errors="coerce")
 
-# Crear app
+# Crear app Dash
 app = Dash(__name__)
 server = app.server 
 
@@ -67,7 +69,7 @@ app.layout = html.Div([
 
     html.Br(),
     
-    # GRÁFICAS
+    # Contenedor de graficas
     dcc.Graph(id="sales-by-category"),
     dcc.Graph(id="sales-by-brand"),
     dcc.Graph(id="sales-by-city"),
@@ -76,7 +78,7 @@ app.layout = html.Div([
 
 ])
 
-# Callbacks
+# Callbacks para actualizar los estados segun el pais
 @app.callback(
     Output("state-filter", "options"),
     Input("country-filter", "value")
@@ -129,7 +131,7 @@ def update_graphs(payment, country, state, city):
     if city:
         filtered = filtered[filtered["City"] == city]
 
-    # 1. Categorías – colores automáticos
+    # 1. Categorías 
     fig1 = px.bar(
         filtered.groupby("Category")["Sales"].sum().reset_index(),
         x="Category",
@@ -139,7 +141,7 @@ def update_graphs(payment, country, state, city):
         color_discrete_sequence=px.colors.qualitative.Set3
     )
 
-    # 2. Marcas – colores automáticos
+    # 2. Marcas 
     fig2 = px.bar(
         filtered.groupby("Brand")["Sales"].sum().reset_index(),
         x="Brand",
@@ -169,7 +171,7 @@ def update_graphs(payment, country, state, city):
         color_discrete_sequence=["#d62728"]
     )
 
-    # 5. Métodos de pago
+    # 5. Metodos de pago
     fig5 = px.pie(
         filtered,
         names="PaymentMethod",
